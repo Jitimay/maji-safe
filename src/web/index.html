@@ -151,9 +151,17 @@
             background: linear-gradient(45deg, #00ff80, #40ff90);
         }
         
-        .btn-success:hover {
-            background: linear-gradient(45deg, #00ff80, #60ffa0);
-            box-shadow: 0 8px 25px rgba(0, 255, 128, 0.5);
+        .btn-disabled {
+            background: linear-gradient(45deg, #666, #888);
+            color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .btn-disabled:hover {
+            transform: none;
+            box-shadow: none;
+            background: linear-gradient(45deg, #666, #888);
         }
         
         .pump-controls {
@@ -259,12 +267,11 @@
             
             <div class="panel" id="purchaseSection">
                 <h3>💧 WATER CREDIT SYSTEM</h3>
-                <div class="status-display">
-                    PRICE: 0.001 ETH PER CREDIT<br>
-                    STATUS: READY FOR TRANSACTION
+                <div class="status-display" id="purchaseStatus">
+                    WAITING FOR SMS PAYMENT...
                 </div>
-                <button class="btn btn-success" onclick="buyWater()">
-                    🚰 PURCHASE WATER
+                <button id="buyWaterBtn" class="btn btn-disabled" onclick="buyWater()" disabled>
+                    ⏳ WAITING FOR SMS PAYMENT
                 </button>
             </div>
             

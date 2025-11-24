@@ -22,6 +22,7 @@ let provider = null;
 let signer = null;
 let contract = null;
 let pumpActive = false;
+let smsPaymentReceived = false; // Track SMS payment status
 
 // Sci-fi status messages
 const statusMessages = [
@@ -88,9 +89,15 @@ async function connectWallet() {
         
         contract = new ethers.Contract(contractAddress, contractABI, signer);
         
-        // Show purchase section
+        // Show purchase section with disabled button
         document.getElementById('purchaseSection').style.display = 'block';
         document.getElementById('connectBtn').style.display = 'none';
+        
+        // Initially disable purchase button until SMS payment
+        updatePurchaseButton();
+        
+        // Start checking for SMS payments
+        checkForSMSPayments();
         
         // Animate connection success
         animateSuccess();
@@ -117,11 +124,60 @@ async function switchToNetwork() {
     }
 }
 
+async function checkForSMSPayments() {
+    // Check AI Bridge for SMS payment status
+    console.log('Starting SMS payment monitoring...');
+    
+    setInterval(async () => {
+        try {
+            console.log('Checking SMS status...');
+            const response = await fetch('http://localhost:5001/sms-status');
+            const data = await response.json();
+            
+            console.log('SMS Status:', data);
+            
+            if (data.payment_received && !smsPaymentReceived) {
+                console.log('SMS Payment detected!');
+                smsPaymentReceived = true;
+                updatePurchaseButton();
+                
+                document.getElementById('status').innerHTML = 
+                    `SMS PAYMENT RECEIVED! 📱<br>FROM: ${data.phone}<br>AMOUNT: ${data.amount}<br>READY FOR BLOCKCHAIN CONFIRMATION`;
+            }
+        } catch (error) {
+            console.error('SMS check error:', error);
+            // AI Bridge not responding, keep checking
+        }
+    }, 2000); // Check every 2 seconds
+}
+
+function updatePurchaseButton() {
+    const buyButton = document.getElementById('buyWaterBtn');
+    const statusDiv = document.getElementById('purchaseStatus');
+    
+    if (smsPaymentReceived) {
+        // Enable button - SMS payment received
+        buyButton.disabled = false;
+        buyButton.className = 'btn btn-success';
+        buyButton.innerHTML = '🚰 PURCHASE WATER';
+        statusDiv.innerHTML = 'SMS PAYMENT CONFIRMED<br>READY FOR BLOCKCHAIN TRANSACTION';
+    } else {
+        // Disable button - waiting for SMS
+        buyButton.disabled = true;
+        buyButton.className = 'btn btn-disabled';
+        buyButton.innerHTML = '⏳ WAITING FOR SMS PAYMENT';
+        statusDiv.innerHTML = 'SEND SMS TO: +25766303339<br>FORMAT: PAY 5000 BIF PUMP001';
+    }
+}
+
 async function buyWater() {
-    if (!contract) return;
+    if (!contract || !smsPaymentReceived) {
+        document.getElementById('status').innerHTML = 'ERROR: SMS PAYMENT REQUIRED FIRST';
+        return;
+    }
     
     try {
-        document.getElementById('status').innerHTML = 'PROCESSING WATER CREDIT TRANSACTION...';
+        document.getElementById('status').innerHTML = 'PROCESSING BLOCKCHAIN TRANSACTION...';
         
         const pumpId = ethers.utils.formatBytes32String("PUMP001");
         const tx = await contract.buyWater(pumpId, {
@@ -132,7 +188,18 @@ async function buyWater() {
         
         await tx.wait();
         
-        document.getElementById('status').innerHTML = 'WATER CREDITS ACQUIRED! 🚰<br>SMS COMMAND TRANSMITTED TO PUMP<br>TRANSACTION CONFIRMED ON BLOCKCHAIN';
+        document.getElementById('status').innerHTML = 'BLOCKCHAIN CONFIRMED! 🚰<br>SMS COMMAND TRANSMITTED TO PUMP<br>WATER DISPENSING AUTHORIZED';
+        
+        // Notify AI Bridge that blockchain is confirmed
+        fetch('http://localhost:5001/blockchain-confirmed', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tx_hash: tx.hash })
+        });
+        
+        // Reset for next payment
+        smsPaymentReceived = false;
+        updatePurchaseButton();
         
         // Animate success
         animateSuccess();
