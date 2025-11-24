@@ -188,7 +188,11 @@ async function buyWater() {
         
         await tx.wait();
         
-        document.getElementById('status').innerHTML = 'BLOCKCHAIN CONFIRMED! 🚰<br>SMS COMMAND TRANSMITTED TO PUMP<br>WATER DISPENSING AUTHORIZED';
+        document.getElementById('status').innerHTML = 'BLOCKCHAIN CONFIRMED! ✅<br>WATER CREDITS ACQUIRED<br>READY FOR PUMP ACTIVATION';
+        
+        // Reset button to gray immediately after transaction
+        smsPaymentReceived = false;
+        updatePurchaseButton();
         
         // Notify AI Bridge that blockchain is confirmed
         fetch('http://localhost:5001/blockchain-confirmed', {
@@ -196,10 +200,6 @@ async function buyWater() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ tx_hash: tx.hash })
         });
-        
-        // Reset for next payment
-        smsPaymentReceived = false;
-        updatePurchaseButton();
         
         // Animate success
         animateSuccess();
@@ -218,11 +218,13 @@ async function activatePump() {
     document.getElementById('pumpIndicator').classList.add('active');
     document.getElementById('flowAnimation').classList.add('active');
     
+    document.getElementById('status').innerHTML = 'PUMP ACTIVATION INITIATED...<br>ESTABLISHING CONNECTION TO HARDWARE';
+    
     // Simulate pump activation
     await sleep(2000);
     
     document.getElementById('pumpStatusText').innerHTML = 'ONLINE - DISPENSING WATER';
-    document.getElementById('status').innerHTML = 'PUMP ACTIVATED SUCCESSFULLY!<br>WATER FLOW: 2.5 L/MIN<br>PRESSURE: OPTIMAL';
+    document.getElementById('status').innerHTML = 'PUMP ACTIVATED SUCCESSFULLY! 🚰<br>WATER FLOW: 2.5 L/MIN<br>PRESSURE: OPTIMAL';
     
     // Auto-stop after 10 seconds
     setTimeout(() => {
@@ -236,7 +238,7 @@ async function deactivatePump() {
     document.getElementById('pumpIndicator').classList.remove('active');
     document.getElementById('flowAnimation').classList.remove('active');
     
-    document.getElementById('status').innerHTML = 'PUMP DEACTIVATED<br>WATER FLOW: STOPPED<br>SYSTEM STANDBY MODE';
+    document.getElementById('status').innerHTML = 'PUMP DEACTIVATED ⏹️<br>WATER FLOW: STOPPED<br>SYSTEM STANDBY MODE';
 }
 
 function refreshTelemetry() {
