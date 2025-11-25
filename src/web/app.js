@@ -162,17 +162,17 @@ function updatePurchaseButton() {
         buyButton.innerHTML = '🚰 PURCHASE WATER';
         statusDiv.innerHTML = 'SMS PAYMENT CONFIRMED<br>READY FOR BLOCKCHAIN TRANSACTION';
     } else {
-        // Enable button for testing (no SMS required)
-        buyButton.disabled = false;
-        buyButton.className = 'btn';
-        buyButton.innerHTML = '🚰 PURCHASE WATER';
-        statusDiv.innerHTML = 'READY FOR BLOCKCHAIN TRANSACTION';
+        // Disable button - waiting for SMS
+        buyButton.disabled = true;
+        buyButton.className = 'btn btn-disabled';
+        buyButton.innerHTML = '⏳ WAITING FOR SMS PAYMENT';
+        statusDiv.innerHTML = 'SEND SMS TO: +25766303339<br>FORMAT: PAY 5000 BIF PUMP001';
     }
 }
 
 async function buyWater() {
-    if (!contract) {
-        document.getElementById('status').innerHTML = 'ERROR: WALLET NOT CONNECTED';
+    if (!contract || !smsPaymentReceived) {
+        document.getElementById('status').innerHTML = 'ERROR: SMS PAYMENT REQUIRED FIRST';
         return;
     }
     
