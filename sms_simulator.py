@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SMS Payment Simulator - Test MajiChain SMS payments
+SMS Payment Simulator - Test MajiSafe SMS payments
 Simulates rural African users sending SMS payments
 """
 
@@ -35,7 +35,7 @@ def simulate_sms_payment(phone, payment_text):
         print(f"❌ Connection error: {e}")
 
 def main():
-    print("🌍 MajiChain SMS Payment Simulator")
+    print("🌍 MajiSafe SMS Payment Simulator")
     print("💧 Simulating payments from rural Africa\n")
     
     # Test cases

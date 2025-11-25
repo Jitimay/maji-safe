@@ -2,7 +2,7 @@ import { ethers } from "hardhat";
 
 async function safeDeploy() {
   try {
-    console.log("🚰 MajiChain Safe Deployment Starting...");
+    console.log("🚰 MajiSafe Safe Deployment Starting...");
     
     // Pre-deployment checks
     const [deployer] = await ethers.getSigners();

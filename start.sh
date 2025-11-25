@@ -1,18 +1,18 @@
 #!/bin/bash
-# MajiChain Simple Launcher
+# MajiSafe Simple Launcher
 
-echo "🚰 Starting MajiChain - SMS to Water System"
+echo "🚰 Starting MajiSafe - SMS to Water System"
 echo "=========================================="
 
 # Kill any existing processes
-pkill -f "majichain_ai.py" 2>/dev/null || true
+pkill -f "majisafe_ai.py" 2>/dev/null || true
 pkill -f "python3 -m http.server" 2>/dev/null || true
 
 # Start AI Bridge
 echo "🤖 Starting AI Bridge..."
 cd src/ai-bridge
 source venv/bin/activate
-python majichain_ai.py &
+python majisafe_ai.py &
 AI_PID=$!
 
 # Start Web UI
@@ -24,7 +24,7 @@ WEB_PID=$!
 cd ../..
 
 echo ""
-echo "🎉 MajiChain is LIVE!"
+echo "🎉 MajiSafe is LIVE!"
 echo "🌐 Web UI: http://localhost:8000"
 echo "🤖 AI Bridge: http://localhost:5001"
 echo "🦊 MetaMask Monitor: Active"

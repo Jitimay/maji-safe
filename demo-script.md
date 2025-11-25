@@ -1,7 +1,7 @@
-# MajiChain Demo Video Script (5 minutes)
+# MajiSafe Demo Video Script (5 minutes)
 
 ## [0:00-0:30] Problem & Solution
-"Hi, I'm demonstrating MajiChain - turning DeFi into drinkable water for rural Africa. 
+"Hi, I'm demonstrating MajiSafe - turning DeFi into drinkable water for rural Africa. 
 
 The problem: 2 billion people lack clean water access, often due to corruption and poor infrastructure.
 
@@ -10,7 +10,7 @@ The solution: Blockchain payments directly activate water pumps via SMS, elimina
 ## [0:30-2:00] Live Demo
 "Let me show you how it works:
 
-1. **Web Interface**: Open MajiChain app
+1. **Web Interface**: Open MajiSafe app
 2. **Connect Wallet**: MetaMask to Base Sepolia network
 3. **Purchase Water**: 0.001 ETH for 1 water credit
 4. **Blockchain Transaction**: Show transaction on Base explorer
@@ -36,7 +36,7 @@ All built with Claude 3.5 Sonnet in just 2 hours - that's Vibe Coding!"
 This demonstrates the power of AI-assisted development."
 
 ## [4:00-5:00] Impact & Vision
-"MajiChain addresses UN SDG #6 with:
+"MajiSafe addresses UN SDG #6 with:
 - Transparent water distribution
 - Corruption elimination  
 - Scalable across rural Africa

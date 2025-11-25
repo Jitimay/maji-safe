@@ -1,7 +1,7 @@
 #!/bin/bash
-# MajiChain Complete Setup and Launcher
+# MajiSafe Complete Setup and Launcher
 
-echo "🚰 MajiChain Complete Setup & Launch"
+echo "🚰 MajiSafe Complete Setup & Launch"
 echo "===================================="
 
 # Check if Python3 is installed
@@ -28,12 +28,12 @@ pip install -r requirements.txt
 
 # Kill any existing processes
 echo "🧹 Cleaning up existing processes..."
-pkill -f "majichain_ai.py" 2>/dev/null || true
+pkill -f "majisafe_ai.py" 2>/dev/null || true
 pkill -f "python3 -m http.server" 2>/dev/null || true
 
 # Start AI Bridge
 echo "🤖 Starting AI Bridge..."
-python majichain_ai.py &
+python majisafe_ai.py &
 AI_PID=$!
 
 # Start Web UI
@@ -45,10 +45,10 @@ WEB_PID=$!
 cd ../..
 
 echo ""
-echo "🎉 MajiChain is LIVE!"
+echo "🎉 MajiSafe is LIVE!"
 echo "🌐 Web UI: http://localhost:8000"
 echo "🤖 AI Bridge: http://localhost:5001"
-echo "📱 SMS Test: python3 test_majichain.py"
+echo "📱 SMS Test: python3 test_majisafe.py"
 echo ""
 echo "💧 Ready to convert SMS to clean water!"
 echo "👤 Open: http://localhost:8000"

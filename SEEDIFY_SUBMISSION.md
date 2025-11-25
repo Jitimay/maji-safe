@@ -1,8 +1,8 @@
-# MajiChain Seedify Submission
+# MajiSafe Seedify Submission
 
 ## Project Description (150 words)
 
-MajiChain transforms cryptocurrency into clean water access for rural African communities. Our decentralized system accepts crypto payments on Base L2 and automatically activates physical water pumps via SMS commands, working even on basic 2G networks.
+MajiSafe transforms cryptocurrency into clean water access for rural African communities. Our decentralized system accepts crypto payments on Base L2 and automatically activates physical water pumps via SMS commands, working even on basic 2G networks.
 
 The architecture combines blockchain transparency with IoT hardware: users purchase water credits through our web interface, an AI bridge service listens for blockchain events and generates lightweight SMS commands (1-5 bytes), and ESP32 controllers receive these commands to dispense water. This eliminates corruption, reduces costs, and provides transparent water distribution.
 

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Setup Real Web3 Integration for MajiChain
+Setup Real Web3 Integration for MajiSafe
 Configure your MetaMask private key for automatic payments
 """
 
 import os
 
 def setup_web3():
-    print("🔐 MajiChain Real Web3 Setup")
+    print("🔐 MajiSafe Real Web3 Setup")
     print("=" * 40)
     
     print("\n⚠️  SECURITY WARNING:")
@@ -26,7 +26,7 @@ def setup_web3():
     
     if len(private_key) == 64:
         # Update the AI bridge file
-        ai_file = "/home/josh/Kiro/maji_chain/src/ai-bridge/majichain_ai.py"
+        ai_file = "/home/josh/Kiro/maji_chain/src/ai-bridge/majisafe_ai.py"
         
         with open(ai_file, 'r') as f:
             content = f.read()
@@ -41,7 +41,7 @@ def setup_web3():
             f.write(content)
         
         print("✅ Private key configured!")
-        print("🚀 Your MajiChain will now make REAL blockchain transactions!")
+        print("🚀 Your MajiSafe will now make REAL blockchain transactions!")
         
     elif len(private_key) == 66 and private_key.startswith('0x'):
         # Remove 0x prefix
@@ -49,7 +49,7 @@ def setup_web3():
         print("✅ Removed 0x prefix")
         
         # Update file
-        ai_file = "/home/josh/Kiro/maji_chain/src/ai-bridge/majichain_ai.py"
+        ai_file = "/home/josh/Kiro/maji_chain/src/ai-bridge/majisafe_ai.py"
         
         with open(ai_file, 'r') as f:
             content = f.read()
@@ -73,7 +73,7 @@ def setup_web3():
     print("- Minimum needed: ~0.01 ETH for gas fees")
     
     print("\n🚀 Ready to test:")
-    print("1. Restart AI Bridge: python majichain_ai.py")
+    print("1. Restart AI Bridge: python majisafe_ai.py")
     print("2. Send SMS: PAY 5000 BIF PUMP001")
     print("3. Watch REAL blockchain transaction!")
     

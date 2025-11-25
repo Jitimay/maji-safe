@@ -1,9 +1,9 @@
-# MajiChain: Decentralized Water Broker for Rural Africa
+# MajiSafe: Decentralized Water Broker for Rural Africa
 
 **"Turning DeFi into Drinkable Water"**
 
 ## Overview
-MajiChain transforms crypto payments into real-world water access for rural communities with limited connectivity. Using blockchain transactions on basic 2G networks, villagers can buy clean water through transparent, corruption-free distribution.
+MajiSafe transforms crypto payments into real-world water access for rural communities with limited connectivity. Using blockchain transactions on basic 2G networks, villagers can buy clean water through transparent, corruption-free distribution.
 
 ## Architecture
 - **Blockchain (Base L2)**: Processes payments
@@ -68,4 +68,4 @@ Provides transparent, automated, corruption-free clean water distribution for ru
 
 ## Built with Vibe Coding
 This project extensively uses AI-assisted development. See `prompts.md` and `ai_logs/` for detailed documentation of the AI development process.
-# MajiChain-DeFi-Water-Access-
+# MajiSafe-DeFi-Water-Access-

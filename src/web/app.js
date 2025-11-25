@@ -1,4 +1,4 @@
-// MajiChain Web Interface - Futuristic Water Control System
+// MajiSafe Web Interface - Futuristic Water Control System
 
 const contractAddress = "0x4933781A5DDC86bdF9c9C9795647e763E0429E28";
 const contractABI = [
@@ -40,7 +40,7 @@ window.addEventListener('load', async () => {
 
 async function initializeSystem() {
     // Animated startup sequence
-    document.getElementById('status').innerHTML = 'BOOTING MAJICHAIN PROTOCOL...';
+    document.getElementById('status').innerHTML = 'BOOTING MAJISAFE PROTOCOL...';
     
     await sleep(1000);
     

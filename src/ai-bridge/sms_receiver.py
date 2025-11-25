@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MajiChain SMS Receiver - Real SMS Integration
+MajiSafe SMS Receiver - Real SMS Integration
 Monitors SMS messages to +25766303339 and processes payments
 """
 

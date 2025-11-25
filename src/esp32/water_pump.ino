@@ -1,5 +1,5 @@
 /*
- * MajiChain ESP32 - SMS Payment Receiver & Pump Controller
+ * MajiSafe ESP32 - SMS Payment Receiver & Pump Controller
  * Receives SMS payments from rural users, forwards to AI Bridge
  */
 
@@ -38,7 +38,7 @@ void setup() {
   initModem();
   initWiFi();
   
-  Serial.println("MajiChain SMS Payment System Ready");
+  Serial.println("MajiSafe SMS Payment System Ready");
 }
 
 void loop() {
@@ -134,17 +134,19 @@ void forwardToAIBridge(String payment, String phone) {
 }
 
 void activatePump(int seconds) {
-  Serial.println("Activating pump for " + String(seconds) + " seconds");
+  Serial.println("🚰 Activating pump via RELAY for " + String(seconds) + " seconds");
   
   pumpActive = true;
-  digitalWrite(PUMP_PIN, HIGH);
+  digitalWrite(PUMP_PIN, HIGH);  // Turn ON relay
+  Serial.println("⚡ Relay ON - Pump Running");
   
   delay(seconds * 1000);
   
-  digitalWrite(PUMP_PIN, LOW);
+  digitalWrite(PUMP_PIN, LOW);   // Turn OFF relay
   pumpActive = false;
+  Serial.println("🛑 Relay OFF - Pump Stopped");
   
-  Serial.println("Pump deactivated. Flow: " + String(flowPulses) + " pulses");
+  Serial.println("Water dispensed. Flow: " + String(flowPulses) + " pulses");
   flowPulses = 0;
 }
 

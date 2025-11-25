@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MajiChain System Test
+MajiSafe System Test
 Test SMS payment processing end-to-end
 """
 
@@ -63,13 +63,13 @@ def test_system_status():
         return False
 
 def main():
-    print("🚰 MajiChain System Test")
+    print("🚰 MajiSafe System Test")
     print("=" * 50)
     
     # Test system status
     if not test_system_status():
         print("\n❌ System not ready. Start AI Bridge first:")
-        print("cd src/ai-bridge && source venv/bin/activate && python majichain_ai.py")
+        print("cd src/ai-bridge && source venv/bin/activate && python majisafe_ai.py")
         return
     
     print("\n📱 Testing SMS Payments:")

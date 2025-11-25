@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MajiChain Unified Launcher
+MajiSafe Unified Launcher
 Starts Web UI + AI Bridge + Web3 all in one command
 """
 
@@ -12,7 +12,7 @@ import sys
 import webbrowser
 from pathlib import Path
 
-class MajiChainLauncher:
+class MajiSafeLauncher:
     def __init__(self):
         self.base_dir = Path(__file__).parent
         self.processes = []
@@ -26,7 +26,7 @@ class MajiChainLauncher:
         # Activate venv and start AI bridge
         cmd = [
             "bash", "-c", 
-            f"cd {ai_dir} && source venv/bin/activate && python majichain_ai.py"
+            f"cd {ai_dir} && source venv/bin/activate && python majisafe_ai.py"
         ]
         
         process = subprocess.Popen(
@@ -56,7 +56,7 @@ class MajiChainLauncher:
         # Activate venv and start AI bridge
         cmd = [
             "bash", "-c", 
-            f"cd {ai_dir} && source venv/bin/activate && python majichain_ai.py"
+            f"cd {ai_dir} && source venv/bin/activate && python majisafe_ai.py"
         ]
         
         process = subprocess.Popen(
@@ -108,14 +108,14 @@ class MajiChainLauncher:
         print("✅ Web UI started on port 8000")
     
     def open_browser(self):
-        """Open browser to MajiChain UI"""
-        print("🚀 Opening MajiChain in browser...")
+        """Open browser to MajiSafe UI"""
+        print("🚀 Opening MajiSafe in browser...")
         time.sleep(1)
         webbrowser.open("http://localhost:8000")
     
     def start_all(self):
-        """Start all MajiChain services"""
-        print("🚰 MajiChain Unified Launcher")
+        """Start all MajiSafe services"""
+        print("🚰 MajiSafe Unified Launcher")
         print("=" * 40)
         
         try:
@@ -128,7 +128,7 @@ class MajiChainLauncher:
             # DON'T open browser automatically
             # self.open_browser()  # REMOVED
             
-            print("\n🎉 MajiChain is LIVE!")
+            print("\n🎉 MajiSafe is LIVE!")
             print("🌐 Web UI: http://localhost:8000")
             print("🤖 AI Bridge: http://localhost:5001")
             print("🦊 MetaMask Monitor: Active")
@@ -143,7 +143,7 @@ class MajiChainLauncher:
                 time.sleep(1)
                 
         except KeyboardInterrupt:
-            print("\n🛑 Stopping MajiChain services...")
+            print("\n🛑 Stopping MajiSafe services...")
             self.stop_all()
     
     def stop_all(self):
@@ -158,5 +158,5 @@ class MajiChainLauncher:
         print("✅ All services stopped")
 
 if __name__ == "__main__":
-    launcher = MajiChainLauncher()
+    launcher = MajiSafeLauncher()
     launcher.start_all()

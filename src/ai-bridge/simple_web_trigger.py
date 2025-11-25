@@ -17,9 +17,9 @@ class SimpleWebTrigger:
         try:
             print(f"🌐 Triggering web payment for SMS: {message}")
             
-            # 1. Open browser to MajiChain (user will see it)
+            # 1. Open browser to MajiSafe (user will see it)
             webbrowser.open(self.web_url)
-            print("🌐 Browser opened to MajiChain")
+            print("🌐 Browser opened to MajiSafe")
             
             # 2. Give user time to see and click (or auto-trigger)
             time.sleep(2)

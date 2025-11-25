@@ -1,4 +1,4 @@
-# AI Development Prompts for MajiChain
+# AI Development Prompts for MajiSafe
 
 ## Project Genesis
 **Tool Used**: Claude 3.5 Sonnet via Cursor IDE

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MajiChain AI Bridge - SMS Payment Processor
+MajiSafe AI Bridge - SMS Payment Processor
 Receives SMS from ESP32, processes payments, activates pumps
 """
 
@@ -16,7 +16,7 @@ CORS(app)  # Enable CORS for web UI communication
 
 from metamask_only import MetaMaskOnly
 
-class MajiChainAI:
+class MajiSafeAI:
     def __init__(self):
         # Use MOONBASE ALPHA (same as web UI)
         self.w3 = Web3(Web3.HTTPProvider('https://rpc.api.moonbase.moonbeam.network'))
@@ -34,12 +34,12 @@ class MajiChainAI:
         }
         
         self.init_db()
-        print("🤖 MajiChain AI Bridge Ready")
+        print("🤖 MajiSafe AI Bridge Ready")
         print("🔗 Using Base Sepolia (same as web UI)")
         print("🦊 Will auto-confirm MetaMask when you click Buy Water")
     
     def init_db(self):
-        self.conn = sqlite3.connect('majichain_payments.db', check_same_thread=False)
+        self.conn = sqlite3.connect('majisafe_payments.db', check_same_thread=False)
         self.conn.execute('''
             CREATE TABLE IF NOT EXISTS sms_payments (
                 id INTEGER PRIMARY KEY,
@@ -120,7 +120,7 @@ class MajiChainAI:
             return False, str(e)
 
 # Global AI instance
-ai = MajiChainAI()
+ai = MajiSafeAI()
 
 # Track current SMS payment
 current_sms_payment = {
@@ -228,7 +228,7 @@ def status():
     """Health check endpoint"""
     return jsonify({
         'status': 'online',
-        'service': 'MajiChain AI Bridge',
+        'service': 'MajiSafe AI Bridge',
         'blockchain': 'Base Sepolia',
         'contract': ai.contract_address,
         'supported_currencies': list(ai.rates.keys())
@@ -263,7 +263,7 @@ def get_payments():
         return jsonify({'error': str(e)})
 
 if __name__ == "__main__":
-    print("🚀 Starting MajiChain AI Bridge...")
+    print("🚀 Starting MajiSafe AI Bridge...")
     print("📱 Ready to process SMS payments")
     print("💧 Converting crypto to clean water")
     print("🌍 Serving rural Africa")

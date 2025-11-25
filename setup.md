@@ -1,4 +1,4 @@
-# MajiChain Setup Guide
+# MajiSafe Setup Guide
 
 ## Step 1: Get Base Sepolia ETH
 1. Go to https://www.coinbase.com/faucets/base-ethereum-sepolia-faucet

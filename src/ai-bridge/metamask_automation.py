@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MajiChain MetaMask Automation - Fixed Version
+MajiSafe MetaMask Automation - Fixed Version
 AI automatically clicks MetaMask for SMS payments
 """
 
@@ -31,7 +31,7 @@ class MetaMaskAutomation:
         try:
             print(f"🤖 AI automating web clicks for SMS: {message}")
             
-            # 1. Open MajiChain web UI
+            # 1. Open MajiSafe web UI
             self.driver.get("http://localhost:8000")
             time.sleep(3)
             
