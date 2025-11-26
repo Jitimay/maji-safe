@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MajiSafe DKG + MetaMask Test Interface</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #00ffff;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .test-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 20px;
+        }
+        
+        .panel-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #00ffff;
+            text-transform: uppercase;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            border: none;
+            color: #000;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #00ff80, #40ff90);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #ff4040, #ff6060);
+            color: white;
+        }
+        
+        .btn-disabled {
+            background: #666;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .input-group {
+            margin: 10px 0;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+        
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .status-display {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            min-height: 100px;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+        
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #00ffff;
+            padding-left: 10px;
+        }
+        
+        .log-success {
+            border-left-color: #00ff80;
+            color: #00ff80;
+        }
+        
+        .log-error {
+            border-left-color: #ff4040;
+            color: #ff4040;
+        }
+        
+        .log-info {
+            border-left-color: #ffff00;
+            color: #ffff00;
+        }
+        
+        .wallet-info {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🦊 MajiSafe DKG + MetaMask</h1>
+            <p>Real Blockchain Transactions for Water Access</p>
+        </div>
+        
+        <div class="test-grid">
+            <div class="test-panel">
+                <h3 class="panel-title">🦊 MetaMask Connection</h3>
+                <button class="btn" id="connectBtn" onclick="connectMetaMask()">
+                    Connect MetaMask
+                </button>
+                <button class="btn btn-success" onclick="switchToMoonbase()">
+                    Switch to Moonbase Alpha
+                </button>
+                <div class="wallet-info" id="walletInfo">
+                    <div class="log-info">MetaMask not connected</div>
+                </div>
+            </div>
+            
+            <div class="test-panel">
+                <h3 class="panel-title">💧 Water Purchase</h3>
+                <div class="input-group">
+                    <label>Pump ID:</label>
+                    <input type="text" id="pumpId" value="PUMP001">
+                </div>
+                <div class="input-group">
+                    <label>ETH Amount:</label>
+                    <input type="number" id="ethAmount" value="0.001" step="0.001">
+                </div>
+                <button class="btn btn-success" id="buyWaterBtn" onclick="buyWater()" disabled>
+                    💧 Buy Water Credits
+                </button>
+                <button class="btn" onclick="getWaterCredits()">
+                    📊 Check Credits
+                </button>
+                <div class="status-display" id="purchaseStatus">
+                    <div class="log-info">Connect MetaMask to purchase water</div>
+                </div>
+            </div>
+            
+            <div class="test-panel">
+                <h3 class="panel-title">📱 SMS to DKG Flow</h3>
+                <div class="input-group">
+                    <label>Phone Number:</label>
+                    <input type="text" id="phoneNumber" value="+250788123456">
+                </div>
+                <div class="input-group">
+                    <label>Amount (Local Currency):</label>
+                    <input type="number" id="localAmount" value="5000">
+                </div>
+                <div class="input-group">
+                    <label>Currency:</label>
+                    <select id="currency">
+                        <option value="BIF">BIF (Burundi Franc)</option>
+                        <option value="USD">USD (US Dollar)</option>
+                        <option value="RWF">RWF (Rwanda Franc)</option>
+                        <option value="KES">KES (Kenya Shilling)</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="sendSMSToDKG()">📱 Send SMS to DKG</button>
+                <button class="btn" onclick="sendToESP32()">📡 Send to ESP32</button>
+                <div class="status-display" id="smsStatus">
+                    <div class="log-info">SMS processing status will appear here</div>
+                </div>
+            </div>
+            
+            <div class="test-panel">
+                <h3 class="panel-title">🔗 Knowledge Assets</h3>
+                <button class="btn" onclick="loadKnowledgeAssets()">📊 Load Assets</button>
+                <button class="btn" onclick="verifyLatestAsset()">✅ Verify Latest</button>
+                <button class="btn" onclick="openDKGDashboard()">🌐 Open Dashboard</button>
+                <div class="status-display" id="assetsStatus">
+                    <div class="log-info">Knowledge Assets will appear here</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-panel full-width">
+            <h3 class="panel-title">📋 Transaction Log</h3>
+            <button class="btn" onclick="clearLog()">🗑️ Clear Log</button>
+            <button class="btn" onclick="runFullTest()">🧪 Run Full Test</button>
+            <div class="status-display" id="testLog">
+                <div class="log-info">Transaction log will appear here...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="metamask_integration.js"></script>
+    <script>
+        const DKG_BRIDGE_URL = 'http://localhost:5002';
+        let isConnected = false;
+        
+        // Initialize
+        window.addEventListener('load', () => {
+            log('🚀 MajiSafe MetaMask Interface Loaded', 'info');
+            checkMetaMaskInstalled();
+        });
+        
+        function log(message, type = 'info') {
+            const logElement = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.innerHTML = `[${timestamp}] ${message}`;
+            logElement.appendChild(entry);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function checkMetaMaskInstalled() {
+            if (typeof window.ethereum !== 'undefined') {
+                log('✅ MetaMask detected', 'success');
+            } else {
+                log('❌ MetaMask not installed', 'error');
+                document.getElementById('walletInfo').innerHTML = 
+                    '<div class="log-error">❌ Please install MetaMask</div>';
+            }
+        }
+        
+        async function connectMetaMask() {
+            try {
+                log('🦊 Connecting to MetaMask...', 'info');
+                
+                const result = await majiSafeWallet.connectWallet();
+                
+                if (result.success) {
+                    isConnected = true;
+                    log(`✅ Connected: ${result.account}`, 'success');
+                    
+                    document.getElementById('walletInfo').innerHTML = `
+                        <div class="log-success">✅ Connected to MetaMask</div>
+                        <div class="log-info">Account: ${result.account.substring(0, 10)}...</div>
+                        <div class="log-info">Network: ${result.network}</div>
+                    `;
+                    
+                    document.getElementById('buyWaterBtn').disabled = false;
+                    document.getElementById('connectBtn').textContent = 'Connected ✅';
+                    
+                    // Get current credits and price
+                    await updateWalletInfo();
+                }
+                
+            } catch (error) {
+                log(`❌ Connection failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function switchToMoonbase() {
+            try {
+                log('🔄 Switching to Moonbase Alpha...', 'info');
+                await majiSafeWallet.switchToMoonbase();
+                log('✅ Switched to Moonbase Alpha', 'success');
+            } catch (error) {
+                log(`❌ Network switch failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function buyWater() {
+            if (!isConnected) {
+                log('❌ Please connect MetaMask first', 'error');
+                return;
+            }
+            
+            const pumpId = document.getElementById('pumpId').value;
+            const ethAmount = document.getElementById('ethAmount').value;
+            
+            try {
+                log(`💧 Purchasing water for ${pumpId} with ${ethAmount} ETH...`, 'info');
+                
+                const result = await majiSafeWallet.buyWaterCredits(pumpId, ethAmount);
+                
+                if (result.success) {
+                    log(`✅ Transaction sent: ${result.txHash}`, 'success');
+                    log(`🚰 Pump: ${result.pumpId}, Amount: ${result.amount} ETH`, 'info');
+                    
+                    document.getElementById('purchaseStatus').innerHTML = `
+                        <div class="log-success">✅ Water Purchase Successful!</div>
+                        <div class="log-info">TX Hash: ${result.txHash}</div>
+                        <div class="log-info">Pump: ${result.pumpId}</div>
+                        <div class="log-info">Amount: ${result.amount} ETH</div>
+                        <div class="log-info">View on <a href="https://moonbase.moonscan.io/tx/${result.txHash}" target="_blank">Moonscan</a></div>
+                    `;
+                    
+                    // Send transaction to DKG Bridge
+                    await sendTransactionToDKG(result);
+                    
+                    // Update wallet info
+                    await updateWalletInfo();
+                }
+                
+            } catch (error) {
+                log(`❌ Purchase failed: ${error.message}`, 'error');
+                document.getElementById('purchaseStatus').innerHTML = 
+                    `<div class="log-error">❌ Purchase failed: ${error.message}</div>`;
+            }
+        }
+        
+        async function sendTransactionToDKG(txResult) {
+            try {
+                log('🔗 Sending transaction to DKG Bridge...', 'info');
+                
+                const dkgData = {
+                    phone: document.getElementById('phoneNumber').value,
+                    amount: parseFloat(document.getElementById('ethAmount').value),
+                    currency: 'ETH',
+                    pump_id: txResult.pumpId,
+                    tx_hash: txResult.txHash,
+                    sender_address: majiSafeWallet.account,
+                    coordinates: { lat: -1.9441, lng: 30.0619 },
+                    timestamp: Date.now(),
+                    device_id: 'METAMASK_WEB'
+                };
+                
+                const response = await fetch(`${DKG_BRIDGE_URL}/process-sms`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dkgData)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        log('✅ Knowledge Asset created!', 'success');
+                        log(`🔗 UAL: ${result.ual}`, 'info');
+                    }
+                }
+                
+            } catch (error) {
+                log(`❌ DKG Bridge error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function updateWalletInfo() {
+            try {
+                const credits = await majiSafeWallet.getWaterCredits();
+                const price = await majiSafeWallet.getCreditPrice();
+                
+                document.getElementById('walletInfo').innerHTML += `
+                    <div class="log-info">Water Credits: ${credits}</div>
+                    <div class="log-info">Credit Price: ${price} ETH</div>
+                `;
+                
+            } catch (error) {
+                console.error('Error updating wallet info:', error);
+            }
+        }
+        
+        async function getWaterCredits() {
+            if (!isConnected) {
+                log('❌ Please connect MetaMask first', 'error');
+                return;
+            }
+            
+            try {
+                const credits = await majiSafeWallet.getWaterCredits();
+                log(`💧 Your water credits: ${credits}`, 'success');
+                
+                document.getElementById('purchaseStatus').innerHTML += 
+                    `<div class="log-success">💧 Water Credits: ${credits}</div>`;
+                    
+            } catch (error) {
+                log(`❌ Error getting credits: ${error.message}`, 'error');
+            }
+        }
+        
+        async function sendSMSToDKG() {
+            const smsData = {
+                phone: document.getElementById('phoneNumber').value,
+                amount: parseInt(document.getElementById('localAmount').value),
+                currency: document.getElementById('currency').value,
+                pump_id: document.getElementById('pumpId').value,
+                coordinates: { lat: -1.9441, lng: 30.0619 },
+                timestamp: Date.now(),
+                device_id: 'WEB_SMS_TEST'
+            };
+            
+            log(`📱 Sending SMS to DKG: PAY ${smsData.amount} ${smsData.currency} ${smsData.pump_id}`, 'info');
+            
+            try {
+                const response = await fetch(`${DKG_BRIDGE_URL}/process-sms`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(smsData)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        log('✅ SMS processed by DKG!', 'success');
+                        document.getElementById('smsStatus').innerHTML = `
+                            <div class="log-success">✅ SMS Processed</div>
+                            <div class="log-info">UAL: ${result.ual}</div>
+                        `;
+                    }
+                }
+            } catch (error) {
+                log(`❌ SMS error: ${error.message}`, 'error');
+            }
+        }
+        
+        function sendToESP32() {
+            const command = `sms:PAY ${document.getElementById('localAmount').value} ${document.getElementById('currency').value} ${document.getElementById('pumpId').value}`;
+            log(`📡 ESP32 Command: ${command}`, 'info');
+            
+            document.getElementById('smsStatus').innerHTML = `
+                <div class="log-info">📡 Enter in Arduino Serial Monitor:</div>
+                <div class="log-success">${command}</div>
+            `;
+        }
+        
+        async function loadKnowledgeAssets() {
+            try {
+                const response = await fetch(`${DKG_BRIDGE_URL}/knowledge-assets`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const assets = data.assets || [];
+                    
+                    log(`📊 Loaded ${assets.length} Knowledge Assets`, 'success');
+                    
+                    let assetsHTML = '<div class="log-success">📊 Recent Assets:</div>';
+                    assets.slice(0, 3).forEach((asset, i) => {
+                        assetsHTML += `
+                            <div class="log-info">${i+1}. ${asset.eventId}</div>
+                            <div class="log-info">   Water: ${asset.litersDispensed}L</div>
+                        `;
+                    });
+                    
+                    document.getElementById('assetsStatus').innerHTML = assetsHTML;
+                }
+            } catch (error) {
+                log(`❌ Assets error: ${error.message}`, 'error');
+            }
+        }
+        
+        function openDKGDashboard() {
+            window.open('http://localhost:8001/dkg_dashboard.html', '_blank');
+        }
+        
+        function clearLog() {
+            document.getElementById('testLog').innerHTML = 
+                '<div class="log-info">Log cleared</div>';
+        }
+        
+        async function runFullTest() {
+            log('🧪 Running Full MetaMask + DKG Test...', 'info');
+            
+            if (!isConnected) {
+                await connectMetaMask();
+            }
+            
+            if (isConnected) {
+                await buyWater();
+                await loadKnowledgeAssets();
+                log('🎉 Full test complete!', 'success');
+            }
+        }
+        
+        function verifyLatestAsset() {
+            log('✅ Check DKG Dashboard for asset verification', 'info');
+        }
+        
+        // MetaMask event listeners
+        if (window.ethereum) {
+            window.ethereum.on('accountsChanged', (accounts) => {
+                if (accounts.length === 0) {
+                    isConnected = false;
+                    log('🦊 MetaMask disconnected', 'info');
+                } else {
+                    log(`🦊 Account changed: ${accounts[0]}`, 'info');
+                }
+            });
+            
+            window.ethereum.on('chainChanged', (chainId) => {
+                log(`🔄 Network changed: ${chainId}`, 'info');
+                window.location.reload();
+            });
+        }
+    </script>
+</body>
+</html>
