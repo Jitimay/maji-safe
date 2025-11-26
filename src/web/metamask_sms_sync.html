@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MajiSafe - SMS → Web3 → Pump Flow</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #00ffff;
+        }
+        
+        .main-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .status-display {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            border: none;
+            color: #000;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            min-width: 250px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+        }
+        
+        .btn-waiting {
+            background: #666;
+            color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .btn-processing {
+            background: linear-gradient(45deg, #ffaa00, #ff8800);
+            animation: pulse 1s infinite;
+        }
+        
+        .btn-confirmed {
+            background: linear-gradient(45deg, #00ff80, #40ff90);
+            animation: success-pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @keyframes success-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 128, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 128, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 128, 0); }
+        }
+        
+        .sms-info {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #00ffff;
+            padding-left: 10px;
+        }
+        
+        .log-success { border-left-color: #00ff80; color: #00ff80; }
+        .log-error { border-left-color: #ff4040; color: #ff4040; }
+        .log-info { border-left-color: #ffff00; color: #ffff00; }
+        .log-waiting { border-left-color: #666; color: #ccc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🌊 MajiSafe Flow Control</h1>
+            <p>SMS → Web3 → Pump Activation</p>
+        </div>
+        
+        <div class="main-panel">
+            <h2>💧 Water Purchase Flow</h2>
+            
+            <div class="status-display" id="flowStatus">
+                <div class="log-waiting">⏳ Waiting for SMS payment request...</div>
+                <div class="log-info">📱 Send SMS: "PAY 5000 BIF PUMP001" to activate</div>
+            </div>
+            
+            <div class="sms-info" id="smsInfo" style="display: none;">
+                <h3>📱 SMS Payment Request</h3>
+                <div id="smsDetails"></div>
+            </div>
+            
+            <button class="btn btn-waiting" id="buyWaterBtn" disabled onclick="processWeb3Payment()">
+                ⏳ Waiting for SMS...
+            </button>
+            
+            <div class="status-display" id="paymentLog">
+                <div class="log-info">Payment log will appear here...</div>
+            </div>
+            
+            <button class="btn" onclick="connectMetaMask()" id="connectBtn">
+                🦊 Connect MetaMask
+            </button>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="metamask_integration.js"></script>
+    <script>
+        const ESP32_IP = '192.168.1.30'; // Your ESP32 IP address
+        let isConnected = false;
+        let smsReceived = false;
+        let currentPayment = null;
+        
+        // Initialize
+        window.addEventListener('load', () => {
+            log('🚀 MajiSafe Flow Control Loaded', 'info');
+            checkMetaMaskInstalled();
+            startSMSPolling();
+        });
+        
+        function log(message, type = 'info') {
+            const logElement = document.getElementById('paymentLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.innerHTML = `[${timestamp}] ${message}`;
+            logElement.appendChild(entry);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function updateFlowStatus(message, type = 'info') {
+            const statusElement = document.getElementById('flowStatus');
+            statusElement.innerHTML = `<div class="log-${type}">${message}</div>`;
+        }
+        
+        function checkMetaMaskInstalled() {
+            if (typeof window.ethereum !== 'undefined') {
+                log('✅ MetaMask detected', 'success');
+            } else {
+                log('❌ MetaMask not installed', 'error');
+                updateFlowStatus('❌ Please install MetaMask to continue', 'error');
+            }
+        }
+        
+        async function connectMetaMask() {
+            try {
+                log('🦊 Connecting to MetaMask...', 'info');
+                
+                const result = await majiSafeWallet.connectWallet();
+                
+                if (result.success) {
+                    isConnected = true;
+                    log(`✅ Connected: ${result.account}`, 'success');
+                    document.getElementById('connectBtn').textContent = 'Connected ✅';
+                    
+                    if (smsReceived) {
+                        enableBuyButton();
+                    }
+                }
+                
+            } catch (error) {
+                log(`❌ Connection failed: ${error.message}`, 'error');
+            }
+        }
+        
+        function startSMSPolling() {
+            // Poll ESP32 for SMS status every 2 seconds
+            setInterval(checkSMSStatus, 2000);
+            log('📡 Started polling ESP32 for SMS status', 'info');
+        }
+        
+        async function checkSMSStatus() {
+            try {
+                console.log('Polling ESP32 for SMS status...');
+                const response = await fetch(`http://${ESP32_IP}/sms-status`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const status = await response.json();
+                console.log('SMS Status:', status);
+                
+                if (status.sms_received && !smsReceived) {
+                    // New SMS received!
+                    smsReceived = true;
+                    currentPayment = status;
+                    
+                    log('📱 SMS payment request received!', 'success');
+                    updateFlowStatus('✅ SMS received! Ready for Web3 payment', 'success');
+                    
+                    // Show SMS details
+                    document.getElementById('smsInfo').style.display = 'block';
+                    document.getElementById('smsDetails').innerHTML = `
+                        <div><strong>Phone:</strong> ${status.phone}</div>
+                        <div><strong>Amount:</strong> ${status.amount} ${status.currency}</div>
+                        <div><strong>Pump:</strong> ${status.pump_id}</div>
+                        <div><strong>Event ID:</strong> ${status.event_id}</div>
+                    `;
+                    
+                    // Enable button if MetaMask connected
+                    if (isConnected) {
+                        enableBuyButton();
+                    } else {
+                        updateFlowStatus('🦊 Please connect MetaMask to proceed', 'info');
+                    }
+                }
+                
+                if (status.pump_active) {
+                    updateFlowStatus('💧 Pump is running! Water dispensing...', 'success');
+                }
+                
+            } catch (error) {
+                console.log('ESP32 polling error:', error.message);
+                // Don't log errors to UI - ESP32 might not be reachable
+            }
+        }
+        
+        function enableBuyButton() {
+            const buyBtn = document.getElementById('buyWaterBtn');
+            buyBtn.disabled = false;
+            buyBtn.className = 'btn';
+            buyBtn.textContent = '💧 Confirm Web3 Payment';
+            
+            log('✅ Button enabled! Ready for Web3 payment', 'success');
+            updateFlowStatus('🚀 Ready! Click button to process Web3 payment', 'success');
+        }
+        
+        async function processWeb3Payment() {
+            if (!isConnected || !smsReceived) {
+                log('❌ MetaMask not connected or no SMS received', 'error');
+                return;
+            }
+            
+            const buyBtn = document.getElementById('buyWaterBtn');
+            
+            try {
+                // Step 1: Button processing state
+                buyBtn.textContent = '⏳ Processing Web3 Payment...';
+                buyBtn.className = 'btn btn-processing';
+                buyBtn.disabled = true;
+                
+                log('💰 Processing Web3 payment on Moonbase Alpha...', 'info');
+                updateFlowStatus('⏳ Processing Web3 payment...', 'info');
+                
+                // Step 2: Send MetaMask transaction
+                const result = await majiSafeWallet.buyWaterCredits('PUMP001', '0.001');
+                
+                if (result.success) {
+                    log(`✅ Transaction sent: ${result.txHash}`, 'success');
+                    
+                    // Step 3: Wait for confirmation
+                    buyBtn.textContent = '⏳ Awaiting Blockchain Confirmation...';
+                    updateFlowStatus('⏳ Waiting for Moonbase Alpha confirmation...', 'info');
+                    
+                    const confirmed = await waitForTransactionConfirmation(result.txHash);
+                    
+                    if (confirmed) {
+                        // Step 4: Send confirmation to ESP32
+                        await sendConfirmationToESP32(result.txHash);
+                        
+                        // Step 5: Button success state
+                        buyBtn.textContent = '✅ Payment Confirmed! Pump Activating...';
+                        buyBtn.className = 'btn btn-confirmed';
+                        
+                        log('✅ Payment confirmed! Pump should activate now', 'success');
+                        updateFlowStatus('✅ Payment confirmed! Pump activating...', 'success');
+                        
+                        // Reset after 10 seconds
+                        setTimeout(resetForNextPayment, 10000);
+                        
+                    } else {
+                        throw new Error('Transaction confirmation failed');
+                    }
+                }
+                
+            } catch (error) {
+                log(`❌ Payment failed: ${error.message}`, 'error');
+                updateFlowStatus(`❌ Payment failed: ${error.message}`, 'error');
+                
+                // Reset button
+                buyBtn.textContent = '💧 Confirm Web3 Payment';
+                buyBtn.className = 'btn';
+                buyBtn.disabled = false;
+            }
+        }
+        
+        async function waitForTransactionConfirmation(txHash) {
+            try {
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const receipt = await provider.waitForTransaction(txHash, 1, 60000);
+                
+                if (receipt && receipt.status === 1) {
+                    log('✅ Transaction confirmed on Moonbase Alpha', 'success');
+                    return true;
+                } else {
+                    return false;
+                }
+                
+            } catch (error) {
+                log(`❌ Confirmation error: ${error.message}`, 'error');
+                return false;
+            }
+        }
+        
+        async function sendConfirmationToESP32(txHash) {
+            try {
+                log('📡 Sending confirmation to ESP32...', 'info');
+                
+                const response = await fetch(`http://${ESP32_IP}/confirm-web3`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `tx_hash=${txHash}&event_id=${currentPayment.event_id}`
+                });
+                
+                if (response.ok) {
+                    log('✅ Confirmation sent to ESP32', 'success');
+                } else {
+                    throw new Error('ESP32 confirmation failed');
+                }
+                
+            } catch (error) {
+                log(`❌ ESP32 confirmation error: ${error.message}`, 'error');
+            }
+        }
+        
+        function resetForNextPayment() {
+            // Reset for next payment cycle
+            smsReceived = false;
+            currentPayment = null;
+            
+            const buyBtn = document.getElementById('buyWaterBtn');
+            buyBtn.textContent = '⏳ Waiting for SMS...';
+            buyBtn.className = 'btn btn-waiting';
+            buyBtn.disabled = true;
+            
+            document.getElementById('smsInfo').style.display = 'none';
+            updateFlowStatus('⏳ Waiting for next SMS payment request...', 'waiting');
+            
+            log('🔄 Reset complete. Ready for next SMS payment', 'info');
+        }
+    </script>
+</body>
+</html>

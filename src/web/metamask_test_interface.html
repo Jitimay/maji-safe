@@ -327,19 +327,19 @@
             const ethAmount = document.getElementById('ethAmount').value;
             
             try {
-                log(`💧 Purchasing water for ${pumpId} with ${ethAmount} ETH...`, 'info');
+                log(`💧 Purchasing water for ${pumpId} with ${ethAmount} DEV...`, 'info');
                 
                 const result = await majiSafeWallet.buyWaterCredits(pumpId, ethAmount);
                 
                 if (result.success) {
                     log(`✅ Transaction sent: ${result.txHash}`, 'success');
-                    log(`🚰 Pump: ${result.pumpId}, Amount: ${result.amount} ETH`, 'info');
+                    log(`🚰 Pump: ${result.pumpId}, Amount: ${result.amount} DEV`, 'info');
                     
                     document.getElementById('purchaseStatus').innerHTML = `
                         <div class="log-success">✅ Water Purchase Successful!</div>
                         <div class="log-info">TX Hash: ${result.txHash}</div>
                         <div class="log-info">Pump: ${result.pumpId}</div>
-                        <div class="log-info">Amount: ${result.amount} ETH</div>
+                        <div class="log-info">Amount: ${result.amount} DEV</div>
                         <div class="log-info">View on <a href="https://moonbase.moonscan.io/tx/${result.txHash}" target="_blank">Moonscan</a></div>
                     `;
                     
