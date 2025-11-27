@@ -626,7 +626,10 @@
             try {
                 log('🦊 Connecting to MetaMask wallet...', 'info');
                 
-                const result = await majiSafeWallet.connectWallet();
+                const networkSelect = document.getElementById('networkSelect');
+                const selectedNetwork = networkSelect ? networkSelect.value : 'moonbase';
+                
+                const result = await majiSafeWallet.connectWallet(selectedNetwork);
                 
                 if (result.success) {
                     isConnected = true;
