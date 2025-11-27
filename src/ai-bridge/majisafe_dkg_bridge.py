@@ -10,20 +10,21 @@ import sqlite3
 from datetime import datetime
 import json
 
-from dkg_agent_simple import SimpleDKGAgent, MCPToolsAgent
+from real_dkg_agent import RealDKGAgent
+from dkg_agent_simple import MCPToolsAgent
 
 app = Flask(__name__)
 CORS(app)
 
 class MajiSafeDKGBridge:
     def __init__(self):
-        self.dkg_agent = SimpleDKGAgent()
+        self.dkg_agent = RealDKGAgent()
         self.mcp_tools = MCPToolsAgent()
         self.init_db()
         
         print("🌊 MajiSafe DKG Bridge Ready")
-        print("🔗 Simplified DKG Mode (No OriginTrail node required)")
-        print("🌙 Using Moonbase Alpha Network")
+        print("🔗 Real OriginTrail DKG Integration")
+        print("🌙 Using NeuroWeb Network")
         print("🤖 MCP Tools Loaded")
     
     def init_db(self):

@@ -85,6 +85,8 @@ void initWiFi() {
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("WiFi Connected: " + WiFi.localIP().toString());
+  Serial.println("🌐 ESP32 IP: " + WiFi.localIP().toString());
+  Serial.println("🔗 Web UI expects: 192.168.1.30");
 }
 
 void initWebServer() {
